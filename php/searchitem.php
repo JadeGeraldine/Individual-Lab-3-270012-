@@ -3,7 +3,7 @@ include_once("dbconnect.php");
 $name = $_POST['name'];
 
 if (isset($name)) 
-    {$sqlsearchitem = "SELECT * FROM tbl_item WHERE name LIKE '%$name%'";
+    {$sqlsearchitem = "SELECT * FROM tbl_item WHERE name LIKE '%$name%' ORDER BY dateadded DESC";
     } 
 else
     {$sqlsearchitem = "SELECT * FROM tbl_item ORDER BY dateadded DESC";

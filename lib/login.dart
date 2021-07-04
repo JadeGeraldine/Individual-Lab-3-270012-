@@ -4,10 +4,14 @@ import 'mainscreen.dart';
 import 'register.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'user.dart';
 
  
 class Login extends StatefulWidget 
-  {@override
+  {final User user;
+   const Login({Key key, this.user}) : super(key: key);
+    
+   @override
    _LoginState createState() => _LoginState();
   }
 
@@ -152,7 +156,7 @@ class _LoginState extends State<Login>
         ((response)
           {print(response.body);
 
-           if  (response.body=="successfailed")
+           if  (response.body == "failed")
             {Fluttertoast.showToast
               (msg: "Login Failed. \n Email/Password is incorrect.",
                toastLength: Toast.LENGTH_SHORT,
@@ -161,8 +165,7 @@ class _LoginState extends State<Login>
                backgroundColor: Colors.red,
                textColor: Colors.white,
                fontSize: 18.0
-              );
-            }
+              );}
            else 
             {Fluttertoast.showToast
               (msg: "Login Success",
@@ -173,8 +176,12 @@ class _LoginState extends State<Login>
                textColor: Colors.white,
                fontSize: 18.0
               );
+             User name = User
+              (email: _email,
+               password: _password,
+              );
              Navigator.push
-              (context, MaterialPageRoute(builder: (content) => Mainscreen()));
+              (context, MaterialPageRoute(builder: (content) => Mainscreen(user: name)));
             }
           }
         );
@@ -365,6 +372,3 @@ class _LoginState extends State<Login>
         );
     }
   }
-
-
-

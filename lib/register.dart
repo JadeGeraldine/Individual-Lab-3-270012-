@@ -9,7 +9,9 @@ class Register extends StatefulWidget
   }
 
 class _RegisterState extends State<Register> 
-  {TextEditingController _emailController = new TextEditingController();
+  {TextEditingController _nameController = new TextEditingController();
+   TextEditingController _phoneController = new TextEditingController();
+   TextEditingController _emailController = new TextEditingController();
    TextEditingController _passwordControllera = new TextEditingController();
    TextEditingController _passwordControllerb = new TextEditingController();
    bool _obscureText = true;
@@ -34,13 +36,13 @@ class _RegisterState extends State<Register>
             (child: Column
               (children: 
                 [Container
-                  (margin: EdgeInsets.fromLTRB(0,20,0,20),
+                  (margin: EdgeInsets.fromLTRB(0,20,0,10),
                    child: Image.asset('assets/images/logo.png', scale:2)
                   ),
                  SizedBox(height:5),
                     
                  Card
-                  (margin: EdgeInsets.fromLTRB(20,0,20,30),
+                  (margin: EdgeInsets.fromLTRB(20,0,20,15),
                    elevation: 10,
                    shape: RoundedRectangleBorder
                     (borderRadius: BorderRadius.circular(50),
@@ -48,10 +50,35 @@ class _RegisterState extends State<Register>
                    color: Colors.white60,
                    child: 
                    Padding 
-                    (padding: const EdgeInsets.fromLTRB(25, 5, 25, 15),
+                    (padding: const EdgeInsets.fromLTRB(25, 5, 25, 10),
                      child: Column
                       (children: 
                         [TextField
+                          (controller: _nameController,
+                           decoration: InputDecoration
+                            (labelText: 'Name', 
+                             labelStyle: TextStyle
+                              (fontFamily: 'Varela_Round', 
+                               fontSize:20
+                              ),
+                             icon: Icon(Icons.person)
+                            ),
+                           style: TextStyle(fontSize:20),
+                          ),
+                         TextField
+                          (controller: _phoneController,
+                           keyboardType: TextInputType.phone,
+                           decoration: InputDecoration
+                            (labelText: 'Phone Number', 
+                             labelStyle: TextStyle
+                              (fontFamily: 'Varela_Round', 
+                               fontSize:20
+                              ),
+                             icon: Icon(Icons.phone)
+                            ),
+                           style: TextStyle(fontSize:20),
+                          ),
+                         TextField
                           (controller: _emailController,
                            keyboardType: TextInputType.emailAddress,
                            decoration: InputDecoration
@@ -132,12 +159,14 @@ class _RegisterState extends State<Register>
     }
 
    void _onSignUp() 
-    {String _email = _emailController.text.toString();
+    {String _name = _nameController.text.toString();
+     String _phone = _phoneController.text.toString();
+     String _email = _emailController.text.toString();
      String _passworda = _passwordControllera.text.toString();
      String _passwordb = _passwordControllerb.text.toString();
      bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(_email);
 
-     if (_email.isEmpty || _passworda.isEmpty || _passwordb.isEmpty)
+     if (_name.isEmpty || _phone.isEmpty || _email.isEmpty || _passworda.isEmpty || _passwordb.isEmpty)
       {Fluttertoast.showToast
         (msg: "Email/password is empty",
          toastLength: Toast.LENGTH_SHORT,
@@ -212,7 +241,7 @@ class _RegisterState extends State<Register>
                      fontSize: 18)),
                 onPressed: () 
                   {Navigator.of(context).pop();
-                   _registerNewUser(_email, _passworda);
+                   _registerNewUser(_name, _phone, _email, _passworda);
                   },
               ),
              TextButton
@@ -237,18 +266,20 @@ class _RegisterState extends State<Register>
       (context, MaterialPageRoute(builder:(content)=>Login()));
     }
 
-   void _registerNewUser(String email, String password) 
+   void _registerNewUser(String name, String phone, String email, String password) 
     {http.post
       (Uri.parse("https://crimsonwebs.com/s270012/ArtisanalDips/php/register.php"),
        body:
-        {"email":email,
+        {"name":name,
+         "phone":phone,
+         "email":email,
          "password":password
         }
       ).then
         ((response)
           {print(response.body);
 
-           if (response.body=="successsuccess")
+           if (response.body=="success")
             {Fluttertoast.showToast
               (msg: "Registered Successfully. Please check email for verification link.",
                toastLength: Toast.LENGTH_SHORT,
@@ -283,4 +314,3 @@ class _RegisterState extends State<Register>
       });
     }
 }
-

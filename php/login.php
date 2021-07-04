@@ -10,7 +10,7 @@ $result = $conn->query($sqllogin);
 
 if ($result->num_rows > 0)
     {while ($row = $result->fetch_assoc())
-        {echo $data = "success,".$row["dateregister"].",".$row["rating"].",".$row["credit"].",".$row["status"];
+        {echo "success";
         }
     }
 else

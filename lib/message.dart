@@ -1,23 +1,38 @@
 import 'package:flutter/material.dart';
+import 'about.dart';
 import 'dips.dart';
-import 'feedback.dart';
 import 'login.dart';
 import 'mainscreen.dart';
-import 'message.dart';
 import 'mycart.dart';
 import 'myprofile.dart';
+import 'feedback.dart';
 import 'user.dart';
+import 'package:flutter/cupertino.dart';
  
-class About extends StatefulWidget 
+class Messages extends StatefulWidget 
   {final User user;
-   const About({Key key, this.user}) : super(key: key);
+   const Messages({Key key, this.user}) : super(key: key);
    
    @override
-   _AboutState createState() => _AboutState();
+   _MessagesState createState() => _MessagesState();
   }
 
-class _AboutState extends State<About> 
-  {@override
+class ChatMessage{
+  String messageContent;
+  String messageType;
+  ChatMessage({@required this.messageContent, @required this.messageType});
+}
+
+class _MessagesState extends State<Messages> 
+  {List<ChatMessage> messages = 
+    [ChatMessage(messageContent: "Hello! Can I ask questions regarding your dips?", messageType: "sender"),
+     ChatMessage(messageContent: "Hi, there! Ask away. We love to help our customers.", messageType: "receiver"),
+     ChatMessage(messageContent: "Are the dips homemade?", messageType: "sender"),
+     ChatMessage(messageContent: "Yes, they are.", messageType: "receiver"),
+     ChatMessage(messageContent: "The dips are homemade from scratch using only fresh organic ingredients.", messageType: "receiver"),
+    ];
+
+   @override
    Widget build(BuildContext context) 
     {return Container
       (decoration: new BoxDecoration
@@ -35,9 +50,9 @@ class _AboutState extends State<About>
        appBar: AppBar
         (centerTitle: true,
          title: Text
-          ('ABOUT',
+          ('MESSAGE TO ARTISANAL DIPS',
            style:TextStyle(fontFamily: 'Fredoka_One',
-           fontSize:30)),
+           fontSize:20)),
          backgroundColor: Colors.green[900]
         ),
        drawer: Theme
@@ -150,90 +165,64 @@ class _AboutState extends State<About>
           )
         ),
         ),
-       
-       body: Center
-          (child: SingleChildScrollView 
-            (child: Column
-              (children: 
-                [Card
-                  (elevation: 10,
-                   shape: RoundedRectangleBorder
-                    (borderRadius: BorderRadius.circular(50),
-                    ),
-                   color: Colors.white60,
-                   child: 
-                   Padding 
-                    (padding: const EdgeInsets.fromLTRB(25, 5, 25, 15),
-                     child: Column
-                      (children:
-                        [Text("Brand name :",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[900],
-                              fontSize:20)),
-                         Text("Artisanal Dips by Shari",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Rajdhani',
-                              fontWeight: FontWeight.bold,
-                              fontSize:20)),
-                         SizedBox(height:10),
-                         Text("Product :",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[900],
-                              fontSize:20)),
-                         Text("Guacamole",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Rajdhani',
-                              fontWeight: FontWeight.bold,
-                              fontSize:20)),
-                         SizedBox(height:10),
-                         Text("Ingredients :",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[900],
-                              fontSize:20)),
-                         Text("Fresh Avocado\nFresh Jalapeños\nFresh Roma Tomatoes\nFreshly squeezed key lime\nChopped coriander\nDiced red onion\nMinced Garlic\nFreshly grounded black and white pepper\nSmoked sea salt flakes",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Rajdhani',
-                              fontWeight: FontWeight.bold,
-                              fontSize:20)),
-                         SizedBox(height:10),
-                         Text("Spices :",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[900],
-                              fontSize:20)),
-                         Text("Freshly grounded mixed spices\nDried mixed herbs",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Rajdhani',
-                              fontWeight: FontWeight.bold,
-                              fontSize:20)),
-                         SizedBox(height:10),
-                         Text("Produced By: :",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[900],
-                              fontSize:20)),
-                         Text("Dawson’s Kitchen Co,\n11600, Penang Island\nMalaysia.",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Rajdhani',
-                              fontWeight: FontWeight.bold,
-                              fontSize:20)),
-                        ]
+       body: Stack
+        (children: <Widget>
+          [Align
+            (alignment: Alignment.bottomLeft,
+             child: Container
+              (padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
+               height: 60,
+               width: double.infinity,
+               color: Colors.white70,
+               child: Row
+                (children: <Widget>
+                  [SizedBox(width: 15),
+                   Expanded
+                    (child: TextField
+                      (decoration: InputDecoration
+                        (hintText: "Write message...",
+                         hintStyle: TextStyle(color: Colors.black87),
+                         border: InputBorder.none
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                   SizedBox(width: 15),
+                   FloatingActionButton
+                    (onPressed: (){},
+                     child: Icon(Icons.send,color: Colors.white,size: 18,),
+                     backgroundColor: Colors.green,
+                     elevation: 0,
+                    ),
+                  ],
+                ),
               ),
-            )
-          ), 
+            ),
+
+           ListView.builder
+            (itemCount: messages.length,
+             shrinkWrap: true,
+             padding: EdgeInsets.only(top: 10,bottom: 10),
+             physics: NeverScrollableScrollPhysics(),
+             itemBuilder: (context, index)
+              {return Container
+                (padding: EdgeInsets.only(left: 14,right: 14,top: 10,bottom: 10),
+                 child: Align
+                  (alignment: (messages[index].messageType == "receiver"?Alignment.topLeft:Alignment.topRight),
+                   child: Container
+                    (decoration: BoxDecoration
+                      (borderRadius: BorderRadius.circular(20),
+                        color: (messages[index].messageType  == "receiver"?Colors.grey.shade200:Colors.green[400]),
+                      ),
+                     padding: EdgeInsets.all(16),
+                     child: Text(messages[index].messageContent, style: TextStyle(fontSize: 16),),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       );
     }
-  }
+}

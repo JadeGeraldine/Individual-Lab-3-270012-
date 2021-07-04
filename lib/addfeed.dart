@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'about.dart';
 import 'dips.dart';
 import 'feedback.dart';
 import 'login.dart';
@@ -6,18 +7,24 @@ import 'mainscreen.dart';
 import 'message.dart';
 import 'mycart.dart';
 import 'myprofile.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'user.dart';
+
  
-class About extends StatefulWidget 
+class AddFeed extends StatefulWidget 
   {final User user;
-   const About({Key key, this.user}) : super(key: key);
-   
+   const AddFeed({Key key, this.user}) : super(key: key);
+
    @override
-   _AboutState createState() => _AboutState();
+   _AddFeedState createState() => _AddFeedState();
   }
 
-class _AboutState extends State<About> 
-  {@override
+class _AddFeedState extends State<AddFeed> 
+  {final _focus = FocusNode();
+   TextEditingController _descCtrl = new TextEditingController();
+   
+   @override
    Widget build(BuildContext context) 
     {return Container
       (decoration: new BoxDecoration
@@ -35,7 +42,7 @@ class _AboutState extends State<About>
        appBar: AppBar
         (centerTitle: true,
          title: Text
-          ('ABOUT',
+          ('FEEDBACK',
            style:TextStyle(fontFamily: 'Fredoka_One',
            fontSize:30)),
          backgroundColor: Colors.green[900]
@@ -150,90 +157,134 @@ class _AboutState extends State<About>
           )
         ),
         ),
-       
+       floatingActionButton: Visibility
+        (child: FloatingActionButton.extended
+          (label: Text('Post', style: TextStyle(fontSize: 20)),
+           onPressed: () {_postfeedback();},
+           icon: Icon(Icons.add),
+           backgroundColor: Colors.green[900],
+          )
+        ),
        body: Center
-          (child: SingleChildScrollView 
-            (child: Column
-              (children: 
-                [Card
-                  (elevation: 10,
-                   shape: RoundedRectangleBorder
-                    (borderRadius: BorderRadius.circular(50),
+        (child: Container
+          (child: Padding
+            (padding: EdgeInsets.fromLTRB(20,5,20,5),
+             child: SingleChildScrollView
+              (child: Column
+                (children:
+                  [Text("Post a review/feedback",
+                    style: TextStyle(fontFamily: 'Varela_Round', 
+                      fontSize:25,
+                      fontWeight: FontWeight.bold)
                     ),
-                   color: Colors.white60,
-                   child: 
-                   Padding 
-                    (padding: const EdgeInsets.fromLTRB(25, 5, 25, 15),
-                     child: Column
-                      (children:
-                        [Text("Brand name :",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[900],
-                              fontSize:20)),
-                         Text("Artisanal Dips by Shari",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Rajdhani',
-                              fontWeight: FontWeight.bold,
-                              fontSize:20)),
-                         SizedBox(height:10),
-                         Text("Product :",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[900],
-                              fontSize:20)),
-                         Text("Guacamole",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Rajdhani',
-                              fontWeight: FontWeight.bold,
-                              fontSize:20)),
-                         SizedBox(height:10),
-                         Text("Ingredients :",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[900],
-                              fontSize:20)),
-                         Text("Fresh Avocado\nFresh Jalapeños\nFresh Roma Tomatoes\nFreshly squeezed key lime\nChopped coriander\nDiced red onion\nMinced Garlic\nFreshly grounded black and white pepper\nSmoked sea salt flakes",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Rajdhani',
-                              fontWeight: FontWeight.bold,
-                              fontSize:20)),
-                         SizedBox(height:10),
-                         Text("Spices :",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[900],
-                              fontSize:20)),
-                         Text("Freshly grounded mixed spices\nDried mixed herbs",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Rajdhani',
-                              fontWeight: FontWeight.bold,
-                              fontSize:20)),
-                         SizedBox(height:10),
-                         Text("Produced By: :",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Comfortaa',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green[900],
-                              fontSize:20)),
-                         Text("Dawson’s Kitchen Co,\n11600, Penang Island\nMalaysia.",
-                              textAlign: TextAlign.center,  
-                              style: TextStyle(fontFamily: 'Rajdhani',
-                              fontWeight: FontWeight.bold,
-                              fontSize:20)),
-                        ]
-                      ),
+                   SizedBox(height:5),
+                   TextFormField
+                    (style: TextStyle (fontSize: 22),
+                     focusNode: _focus,
+                     controller: _descCtrl,
+                     minLines: 5,
+                     maxLines: 5,
+                     keyboardType: TextInputType.multiline,
                     ),
-                  ),
-                ],
-              ),
-            )
-          ), 
+                  ],
+                )
+              )
+            ),
+          ),
+        ),
       ),
       );
     }
+
+ void _postfeedback() 
+  {if (_descCtrl.text.toString() == "") 
+    {Fluttertoast.showToast
+      (msg: "Review/Feedback is empty!",
+       toastLength: Toast.LENGTH_SHORT,
+       gravity: ToastGravity.CENTER,
+       timeInSecForIosWeb: 1,
+       backgroundColor: Colors.red,
+       textColor: Colors.white,
+       fontSize: 18.0);
+     return;
+    }
+   showDialog
+    (context: context,
+     builder: (BuildContext context) 
+      {return AlertDialog
+        (shape: RoundedRectangleBorder
+          (borderRadius: BorderRadius.all(Radius.circular(20.0))
+          ),
+         title: Text("POST REVIEW/FEEDBACK",
+                  style: TextStyle(fontFamily: 'Fredoka_One', 
+                  fontStyle: FontStyle.italic,
+                  color: Colors.blue,
+                  fontSize:22)),
+         content: Text("Confirm?",
+           style: TextStyle(fontSize:20)),
+         actions: 
+          [TextButton
+            (child: 
+              Text("Yes",
+                   style: TextStyle(color: Colors.green[700],
+                   fontFamily: 'Varela_Round',
+                   fontSize: 18)
+                  ),
+             onPressed: ()
+              {Navigator.of(context).pop();
+               _postconfirm();
+              },
+            ),
+           TextButton
+            (child: 
+              Text("Cancel",
+                   style: TextStyle(color: Colors.red[700],
+                   fontFamily: 'Varela_Round',
+                   fontSize: 18)
+                  ),
+             onPressed: () 
+              {Navigator.of(context).pop();}
+            ),
+          ],
+        );
+      }
+    );
   }
+
+ Future<void> _postconfirm() async 
+  {String desc = _descCtrl.text.toString();
+   print(desc);
+   http.post(Uri.parse("https://crimsonwebs.com/s270012/ArtisanalDips/php/addfeed.php"),
+    body: 
+      {"email": widget.user.email,
+       "feedback": desc,
+      }).then((response) 
+        {print(response.body);
+         if (response.body == "success") 
+          {Fluttertoast.showToast
+            (msg: "Review posted successfully.",
+             toastLength: Toast.LENGTH_SHORT,
+             gravity: ToastGravity.TOP,
+             timeInSecForIosWeb: 1,
+             backgroundColor: Colors.green,
+             textColor: Colors.white,
+             fontSize: 18.0);
+           setState(() {_descCtrl.text = "";});
+           Navigator.push(context,MaterialPageRoute(builder: (content) => FeedbackScreen
+            (user: widget.user,
+            )));
+          } 
+         else
+          {Fluttertoast.showToast
+            (msg: "Review post failed",
+             toastLength: Toast.LENGTH_SHORT,
+             gravity: ToastGravity.TOP,
+             timeInSecForIosWeb: 1,
+             backgroundColor: Colors.red,
+             textColor: Colors.white,
+             fontSize: 18.0);
+          }
+        }
+      );
+    }
+}
